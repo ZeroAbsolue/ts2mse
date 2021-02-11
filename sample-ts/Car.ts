@@ -1,7 +1,8 @@
-class Car { 
-    Engine: string; // par défaut, Engine est public 
+class Car extends AnotherCar implements Vehicle, Bike  { 
+    engine: string; // par défaut, Engine est public 
 
     constructor(engine: string) { 
-        this.Engine = engine; 
+        super(engine);
+        this.engine = engine; 
     } 
 } 

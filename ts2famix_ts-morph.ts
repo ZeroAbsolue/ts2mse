@@ -1,4 +1,5 @@
 import { ClassDeclaration, Project } from "ts-morph";
+import { NodeClass } from "./src/Model/NodeClass";
 
 let id: number = 1;
 
@@ -20,24 +21,29 @@ project.getSourceFiles().forEach(sourceFile => {
     if (hasClasses) {
         console.log('Found classes:');
         sourceFile.getClasses().forEach(clazz => {
+            // Ici on verifit si une classe particuliere implemente ou etends une autre classe
+            let tc = new NodeClass(clazz.getName());
+            console.log(tc.hasLink());
+             if(tc.hasLink())
+             console.log(tc.getLinkElements());
             console.log('Class ' + clazz.getName());
-            if (clazz.getConstructors().length > 0) {
-                clazz.getConstructors().forEach(construct => {
-                    console.log(" Constructor: ");
-                    construct.getParameters().forEach(param => {
-                        console.log('  Parameter: ' + param.getName() + ', type: ' + param.getType().getText());
-                    })
-                })
-            }
-            addClassToMSE(clazz, mseFile);
+            // if (clazz.getConstructors().length > 0) {
+            //     clazz.getConstructors().forEach(construct => {
+            //         console.log(" Constructor: ");
+            //         construct.getParameters().forEach(param => {
+            //             console.log('  Parameter: ' + param.getName() + ', type: ' + param.getType().getText());
+            //         })
+            //     })
+            // }
+            // addClassToMSE(clazz, mseFile);
         });
     }
 
     if (hasInterfaces) {
-        console.log('Found interfaces:');
-        sourceFile.getInterfaces().forEach(interfaze => {
-            console.log('Interface ' + interfaze.getName());
-        });
+        // console.log('Found interfaces:');
+        // sourceFile.getInterfaces().forEach(interfaze => {
+        //     console.log('Interface ' + interfaze.getName());
+        // });
     }
 });
 
