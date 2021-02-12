@@ -1,3 +1,2 @@
-interface Bike{
-    
+interface Bike {
 }

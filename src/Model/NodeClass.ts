@@ -1,11 +1,13 @@
 /**
  * Cette classe permet de donner la structure d'une classe concrete
  */
-import { ClassDeclaration, HeritageClause, Project, SourceFile, Type, TypeFlags } from "ts-morph";
+import { ClassDeclaration, ClassElement, HeritageClause, Project, SourceFile, Type, TypeFlags } from "ts-morph";
 import * as _ from "lodash";
 import { Link } from "./Link";
 import { EXTENDS, IMPLEMENTS, CLASS, INTERFACE } from "./Keyword";
 import { link } from "fs";
+import { Parameter } from "./Parameter";
+import { Method } from "./Method";
 
 export class NodeClass {
     protected name: string;
@@ -48,9 +50,9 @@ export class NodeClass {
 
                 element.getTypeNodes().forEach(item => {
                     if (text.includes(EXTENDS)) {
-                        linkElement.push(new Link(EXTENDS,CLASS, item.getText()))
+                        linkElement.push(new Link(EXTENDS, CLASS, item.getText()))
                     } else if (text.includes(IMPLEMENTS)) {
-                        linkElement.push(new Link(IMPLEMENTS,INTERFACE, item.getText()))
+                        linkElement.push(new Link(IMPLEMENTS, INTERFACE, item.getText()))
                     }
                 });
             });
@@ -59,8 +61,30 @@ export class NodeClass {
         return linkElement;
     }
 
-    getSourceFile(): void {
+    getSourceFile(): any {
         this.sourceFile = this.loadSourceFile();
     }
 
+    getMethods(): Array<Method> {
+        let elements = new Array<Method>();
+        let methods = this.sourceFile.getClass(this.name).getMethods();
+        methods.forEach(element => {
+            let name = element.getName();
+            let scope = element.getScope();
+            let returnType = element.getStructure().returnType + "";
+            let argumentList = new Array<Parameter>();
+            element.getStructure().parameters.forEach(element => {
+                let parameterName = element.name;
+                let parameterType = element.type + "";
+                let parameterScope = element.scope + "";
+                argumentList.push(new Parameter(parameterName, parameterType, parameterScope));
+            });
+            elements.push((new Method(name, returnType, scope, argumentList)));
+        });
+        return elements;
+    }
+
+    getOnlySignature(): String {
+        return "";
+    }
 }

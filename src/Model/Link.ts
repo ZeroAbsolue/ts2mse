@@ -1,11 +1,14 @@
+/**
+ * Cette classe permet de formater la liaison entre des elements
+ */
 export class Link {
     type: string;
     keyword: string;
     className: string;
 
-    constructor(type: string, keyword: string, className: string) {
-        this.type = type;
+    constructor(keyword: string, type: string,  className: string) {
         this.keyword = keyword;
+        this.type = type;
         this.className = className;
     }
 }

@@ -1,3 +1,3 @@
-interface Vehicle{
-    
+interface Vehicle {
+    deplacer(): any;
 }
