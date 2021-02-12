@@ -8,8 +8,9 @@ export class Method {
     type: string;
     scope: string;
     argument: Array<Parameter>;
+    signature: string;
 
-    constructor(name: string, type ?: string, scope ? : string, argument?: Array<Parameter>) {
+    constructor(name: string, type?: string, scope?: string, argument?: Array<Parameter>) {
         this.name = name;
         this.type = type;
         this.scope = scope;
@@ -18,5 +19,14 @@ export class Method {
 
     setargument(argument: Array<Parameter>): void {
         this.argument = argument;
+    }
+
+    getSignature(): string {
+        return this.signature;
+    }
+
+
+    setSignature(signature: string): void {
+        this.signature = signature;
     }
 }

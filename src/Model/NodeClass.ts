@@ -8,38 +8,25 @@ import { EXTENDS, IMPLEMENTS, CLASS, INTERFACE } from "./Keyword";
 import { link } from "fs";
 import { Parameter } from "./Parameter";
 import { Method } from "./Method";
+import { SIGABRT } from "constants";
 
 export class NodeClass {
-    protected name: string;
-    private sourceFile: SourceFile;
+    protected classDeclaration: ClassDeclaration;
 
-    constructor(name: string) {
-        this.name = name
-        this.getSourceFile();
+    constructor(classDeclaration: ClassDeclaration) {
+        this.classDeclaration = classDeclaration;
     }
 
     // Permet de determiner si une autre classe a un lien (heritage ou implementation) 
     // d'une autre classe
     hasLink(): boolean {
-        if (!_.isUndefined(this.sourceFile)) {
-            return !_.isEmpty(this.getHeritageClauses());
-        } else {
-            return false;
-        }
+        return !_.isEmpty(this.getHeritageClauses());
+
     }
 
     // Retourne un array de parent si ils existent
     getHeritageClauses(): HeritageClause[] {
-        let classDeclaration = this.sourceFile.getClass(this.name);
-        return classDeclaration.getHeritageClauses();
-    }
-
-    // Retourne le fichier source
-    loadSourceFile(): SourceFile | undefined {
-        const project = new Project();
-        // Pour l'instant le chemin ne peut être que dans sample-ts, on pourrait étendre cela plus tard
-        let path = "./sample-ts/" + this.name + ".ts";
-        return project.addSourceFileAtPath(path);
+        return this.classDeclaration.getHeritageClauses();
     }
 
     getLinkElements(): Array<Link> {
@@ -61,30 +48,31 @@ export class NodeClass {
         return linkElement;
     }
 
-    getSourceFile(): any {
-        this.sourceFile = this.loadSourceFile();
-    }
-
     getMethods(): Array<Method> {
         let elements = new Array<Method>();
-        let methods = this.sourceFile.getClass(this.name).getMethods();
+        let methods = this.classDeclaration.getMethods();
         methods.forEach(element => {
             let name = element.getName();
             let scope = element.getScope();
             let returnType = element.getStructure().returnType + "";
             let argumentList = new Array<Parameter>();
+            let definition = element.getSignature().getDeclaration().getText();
+            let premierOccurence = definition.indexOf('{');
+
+            let signature = definition.substring(0, premierOccurence);
+
             element.getStructure().parameters.forEach(element => {
                 let parameterName = element.name;
                 let parameterType = element.type + "";
                 let parameterScope = element.scope + "";
                 argumentList.push(new Parameter(parameterName, parameterType, parameterScope));
             });
-            elements.push((new Method(name, returnType, scope, argumentList)));
+            let method = new Method(name, returnType, scope, argumentList);
+            method.setSignature(signature);
+            method.getSignature();
+            elements.push(method);
         });
         return elements;
     }
 
-    getOnlySignature(): String {
-        return "";
-    }
 }

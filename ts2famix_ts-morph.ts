@@ -22,8 +22,7 @@ project.getSourceFiles().forEach(sourceFile => {
         console.log('Found classes:');
         sourceFile.getClasses().forEach(clazz => {
             // Ici on verifit si une classe particuliere implemente ou etends une autre classe
-            let tc = new NodeClass(clazz.getName());
-            console.log(tc.hasLink());
+            let tc = new NodeClass(clazz);
              if(tc.hasLink()){
                  console.log(tc.getLinkElements());
              }
